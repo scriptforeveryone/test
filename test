@@ -1,5 +1,3 @@
--- xec-style Grow a Garden pet randomizer
-
 -- List of all pets with rarities
 local pets = {
     {name = "Bunny", rarity = "Common"},
