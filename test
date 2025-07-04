@@ -1,0 +1,94 @@
+-- xec-style Grow a Garden pet randomizer
+
+-- List of all pets with rarities
+local pets = {
+    {name = "Bunny", rarity = "Common"},
+    {name = "Dog", rarity = "Common"},
+    {name = "Golden Lab", rarity = "Common"},
+    {name = "Black Bunny", rarity = "Uncommon"},
+    {name = "Cat", rarity = "Uncommon"},
+    {name = "Chicken", rarity = "Uncommon"},
+    {name = "Deer", rarity = "Uncommon"},
+    {name = "Orange Tabby", rarity = "Rare"},
+    {name = "Spotted Deer", rarity = "Rare"},
+    {name = "Pig", rarity = "Rare"},
+    {name = "Rooster", rarity = "Rare"},
+    {name = "Monkey", rarity = "Rare"},
+    {name = "Hedgehog", rarity = "Rare"},
+    {name = "Cow", rarity = "Legendary"},
+    {name = "Silver Monkey", rarity = "Legendary"},
+    {name = "Sea Otter", rarity = "Legendary"},
+    {name = "Turtle", rarity = "Legendary"},
+    {name = "Polar Bear", rarity = "Legendary"},
+    {name = "Mole", rarity = "Legendary"},
+    {name = "Frog", rarity = "Legendary"},
+    {name = "Panda", rarity = "Legendary"},
+    {name = "Blood Hedgehog", rarity = "Mythical"},
+    {name = "Blood Kiwi", rarity = "Mythical"},
+    {name = "Snail", rarity = "Mythical"},
+    {name = "Giant Ant", rarity = "Mythical"},
+    {name = "Caterpillar", rarity = "Mythical"},
+    {name = "Praying Mantis", rarity = "Mythical"},
+    {name = "Echo Frog", rarity = "Mythical"},
+    {name = "Chicken Zombie", rarity = "Mythical"},
+    {name = "Red Fox", rarity = "Mythical"},
+    {name = "Grey Mouse", rarity = "Mythical"},
+    {name = "Brown Mouse", rarity = "Mythical"},
+    {name = "Squirrel", rarity = "Mythical"},
+    {name = "Bear Bee", rarity = "Mythical"},
+    {name = "Petal Bee", rarity = "Legendary"},
+    {name = "Queen Bee", rarity = "Divine"},
+    {name = "Dragonfly", rarity = "Divine"},
+    {name = "Night Owl", rarity = "Divine"},
+    {name = "Raccoon", rarity = "Divine"},
+    {name = "Blood Owl", rarity = "Divine"}
+}
+
+-- Rarity odds (adjust as desired)
+local rarityChances = {
+    Common    = 0.60,
+    Uncommon  = 0.25,
+    Rare      = 0.10,
+    Legendary = 0.04,
+    Mythical  = 0.009,
+    Divine    = 0.001
+}
+
+-- Build cumulative table
+local cum = {}
+local sum = 0
+for k,v in pairs(rarityChances) do
+    sum = sum + v
+    cum[k] = sum
+end
+
+math.randomseed(tick())
+-- Pick based on rarity
+local function chooseRarity()
+    local r = math.random()
+    for rarity, threshold in pairs(cum) do
+        if r <= threshold then
+            return rarity
+        end
+    end
+    return "Common"
+end
+
+-- Random pet
+local function getRandomPet()
+    local target = chooseRarity()
+    local pool = {}
+    for _, p in ipairs(pets) do
+        if p.rarity == target then
+            table.insert(pool, p)
+        end
+    end
+    if #pool == 0 then
+        return getRandomPet()
+    end
+    return pool[math.random(#pool)]
+end
+
+-- Usage
+local pet = getRandomPet()
+print(("You hatched: %s (%s)"):format(pet.name, pet.rarity))
